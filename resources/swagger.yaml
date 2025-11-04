@@ -1,0 +1,390 @@
+openapi: 3.0.1
+info:
+  title: Hotel Booking API
+  version: 1.0.0
+  description: API para reservas de hotel com autenticação JWT
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /users/register:
+    post:
+      summary: Registrar novo usuário
+      tags: [Usuarios]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: Usuário criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /users/login:
+    post:
+      summary: Login de usuário
+      tags: [Usuarios]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Login bem-sucedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /rooms:
+    get:
+      summary: Listar quartos
+      tags: [Habitaciones]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de quartos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Criar novo quarto (apenas admin)
+      security:
+        - bearerAuth: []
+      tags: [Habitaciones]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomCreate'
+      responses:
+        '201':
+          description: Quarto criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /reservations:
+    post:
+      summary: Criar reserva (usuário autenticado)
+      security:
+        - bearerAuth: []
+      tags: [Reservas]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreate'
+      responses:
+        '201':
+          description: Reserva criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    get:
+      summary: Listar reservas
+      description: Retorna as reservas do usuário autenticado. Se o token pertence a um usuário com papel `admin`, retorna todas as reservas do sistema.
+      security:
+        - bearerAuth: []
+      tags: [Reservas]
+      responses:
+        '200':
+          description: Lista de reservas do usuário
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /reservations/{id}:
+    delete:
+      summary: Cancelar reserva (usuário dono ou admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Reserva cancelada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /payments:
+    post:
+      summary: Registrar pagamento para uma reserva
+      security:
+        - bearerAuth: []
+      tags: [Pagos]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentCreate'
+      responses:
+        '201':
+          description: Pagamento registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    get:
+      summary: Listar pagamentos do usuário
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de pagamentos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /payments/{id}:
+    put:
+      summary: Atualizar status do pagamento (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, confirmed, cancelled]
+      responses:
+        '200':
+          description: Pagamento atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+      required: [id, name, email, role]
+    UserCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+      required: [name, email, password]
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required: [email, password]
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        price:
+          type: number
+        capacity:
+          type: integer
+        available:
+          type: boolean
+      required: [id, type, price, capacity, available]
+    RoomCreate:
+      type: object
+      properties:
+        type:
+          type: string
+        price:
+          type: number
+        capacity:
+          type: integer
+      required: [type, price, capacity]
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        roomId:
+          type: integer
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        status:
+          type: string
+      required: [id, userId, roomId, startDate, endDate, status]
+    BookingCreate:
+      type: object
+      properties:
+        roomId:
+          type: integer
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+      required: [roomId, startDate, endDate]
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+        bookingId:
+          type: integer
+        userId:
+          type: integer
+        amount:
+          type: number
+        status:
+          type: string
+      required: [id, bookingId, userId, amount, status]
+    PaymentCreate:
+      type: object
+      properties:
+        bookingId:
+          type: integer
+        amount:
+          type: number
+      required: [bookingId, amount]
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
