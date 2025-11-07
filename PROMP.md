@@ -48,11 +48,12 @@ Regra de Negócio 1: Caso uma reserva não seja feita por causa do cuarto está 
 Formato
 Tabela com as colunas: ID da Regra de Negócio, Regra de Negócio, Entradas do Usuário e Saídas do Sistema.
 Armazene essa saída em um arquivo Regras de Negócio.md
+--------------------------------------------------
 
 Criação do User History
 
 Objetivo
-Crie as user history como a descrição de as funcionalidade com o objetivo de entender o que o usuário precisa e por quê em base ao código do projeto ppp-mentorioa2.0.
+Crie as User History como a descrição de as funcionalidade com o objetivo de entender o que o usuário precisa e por quê em base ao código do projeto ppp-mentorioa2.0.
 
 
 Contexto
