@@ -1,23 +1,6 @@
-const db = require('../data/memoryDB');
-let nextId = 1;
-
-function createPayment({ bookingId, userId, amount }) {
-  if (!bookingId || !userId || !amount) throw new Error('bookingId, userId and amount required');
-  const payment = { id: nextId++, bookingId, userId, amount, status: 'pending', createdAt: new Date().toISOString() };
-  db.payments.push(payment);
-  return payment;
+// Payments module removed. Service kept to provide clear errors if accidentally required.
+function removed() {
+  throw new Error('Payments module removed');
 }
 
-function getPaymentsByUser(userId) {
-  return db.payments.filter(p => p.userId === userId);
-}
-
-function updatePaymentStatus(id, status) {
-  const p = db.payments.find(x => x.id === id);
-  if (!p) throw new Error('Payment not found');
-  if (!['pending', 'confirmed', 'cancelled'].includes(status)) throw new Error('Invalid status');
-  p.status = status;
-  return p;
-}
-
-module.exports = { createPayment, getPaymentsByUser, updatePaymentStatus };
+module.exports = { createPayment: removed, getPaymentsByUser: removed, updatePaymentStatus: removed };

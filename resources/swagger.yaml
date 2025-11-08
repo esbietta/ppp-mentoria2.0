@@ -155,78 +155,10 @@ paths:
           $ref: '#/components/responses/NotFound'
 
   /payments:
-    post:
-      summary: Registrar pagamento para uma reserva
-      security:
-        - bearerAuth: []
-      tags: [Pagos]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PaymentCreate'
-      responses:
-        '201':
-          description: Pagamento registrado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Payment'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-    get:
-      summary: Listar pagamentos do usuário
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Lista de pagamentos
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Payment'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+  # Payments removed from API
 
   /payments/{id}:
-    put:
-      summary: Atualizar status do pagamento (admin)
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                status:
-                  type: string
-                  enum: [pending, confirmed, cancelled]
-      responses:
-        '200':
-          description: Pagamento atualizado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Payment'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
+  # Payments removed from API
 
 components:
   securitySchemes:
@@ -329,28 +261,7 @@ components:
           type: string
           format: date
       required: [roomId, startDate, endDate]
-    Payment:
-      type: object
-      properties:
-        id:
-          type: integer
-        bookingId:
-          type: integer
-        userId:
-          type: integer
-        amount:
-          type: number
-        status:
-          type: string
-      required: [id, bookingId, userId, amount, status]
-    PaymentCreate:
-      type: object
-      properties:
-        bookingId:
-          type: integer
-        amount:
-          type: number
-      required: [bookingId, amount]
+    # Payment schemas removed from API
   responses:
     BadRequest:
       description: Bad request

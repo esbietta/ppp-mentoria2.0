@@ -1,6 +1,6 @@
 # Hotel Reservations API
 
-API REST simples para gerenciamento de usuários, quartos, reservas e pagamentos.
+API REST simples para gerenciamento de usuários, quartos e reservas.
 
 Principais características:
 - Autenticação JWT (Bearer token)
@@ -35,9 +35,7 @@ Endpoints principais
 - POST /reservations — criar reserva (auth)
 - GET /reservations — listar reservas do usuário (auth)
 - DELETE /reservations/{id} — cancelar reserva (dono ou admin)
-- POST /payments — criar pagamento (auth)
-- GET /payments — listar pagamentos do usuário (auth)
-- PUT /payments/{id} — atualizar status do pagamento (admin)
+<!-- Payments module removed -->
 
 Observações
 - Os dados são mantidos apenas em memória (arquivo `src/data/memoryDB.js`). Reiniciar a aplicação apaga os dados.
@@ -49,7 +47,7 @@ Principais features:
 - Users: registro, login, roles (user/admin)
 - Rooms: CRUD mínimo (admin cria), listar (usuários autenticados)
 - Reservations (bookings): criar, listar, cancelar
-- Payments: criar, listar (usuário), atualizar status (admin)
+<!-- Payments module removed -->
 - In-memory DB (para fins de teste)
 - Swagger UI disponível em `/api-docs`
 
@@ -71,9 +69,7 @@ Endpoints principais:
 - POST /reservations (autenticado)
 - GET /reservations (autenticado)
 - DELETE /reservations/:id (autenticado, dono ou admin)
-- POST /payments (autenticado)
-- GET /payments (autenticado)
-- PUT /payments/:id (admin)
+<!-- Payments module removed -->
 
 Swagger UI:
 - http://localhost:3000/api-docs

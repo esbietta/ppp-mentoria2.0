@@ -12,9 +12,7 @@
 | 8 | Como admin, quero listar todas as reservas para auditar e gerenciar o sistema. | token admin | Sucesso: 200 + todas as reservas (endpoint GET /reservations retorna tudo para admin). |
 | 9 | Como usuário que fez uma reserva, quero cancelar minha reserva para liberar o quarto caso meus planos mudem. | DELETE /reservations/{id} + token (req.user.id) | Sucesso: 200 + booking com status 'cancelled' e room.available -> true. Falha: 400 + 'Booking not found' ou 'Not allowed to cancel this booking' ou 'Booking already cancelled'. |
 | 10 | Como admin, quero poder cancelar qualquer reserva para intervir quando necessário. | DELETE /reservations/{id} + token admin | Sucesso: 200 + booking status 'cancelled'. |
-| 11 | Como usuário, quero registrar um pagamento associado a uma reserva com valor para completar a operação financeira. | { bookingId, userId, amount } + token | Sucesso: 201 + payment (status: 'pending'). Falha: 400 + 'bookingId, userId and amount required'. |
-| 12 | Como usuário, quero consultar meus pagamentos para verificar o status (pendente/confirmado/cancelado). | token válido | Sucesso: 200 + lista de payments filtrada por userId === req.user.id. |
-| 13 | Como admin, quero atualizar o status de um pagamento para confirmar ou cancelar um pagamento quando apropriado. | PATCH /payments/{id} { status } + token admin | Sucesso: 200 + pagamento atualizado. Falha: 400 + 'Payment not found' ou 'Invalid status'; 403 se não for admin. |
+<!-- Payments module removed: related user stories were deleted -->
 | 14 | Como desenvolvedor/operador, quero que as senhas sejam armazenadas de forma segura para reduzir risco de vazamento. | password plain ao registrar | Senha armazenada como hash (bcrypt). Ao retornar usuário na API, a senha é omitida. |
 | 15 | Como usuário, quero mensagens de erro claras quando algo falhar (dados obrigatórios ausentes, credenciais inválidas etc.) para entender o que preciso corrigir. | Requisições inválidas / token ausente / ação não permitida | Respostas com códigos HTTP adequados (400, 401, 403) e corpo { error: '<mensagem>' } explicando o problema. |
 

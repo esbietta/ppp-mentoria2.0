@@ -22,4 +22,9 @@ function updatePaymentStatus(req, res) {
   }
 }
 
-module.exports = { createPayment, listPayments, updatePaymentStatus };
+  // Payments module removed. Controller kept for compatibility but will return 410.
+  function removed(req, res) {
+    res.status(410).json({ error: 'Payments module removed' });
+  }
+
+  module.exports = { createPayment: removed, listPayments: removed, updatePaymentStatus: removed };
