@@ -9,7 +9,7 @@ describe("Registro de Usuário", () => {
         .set("Content-Type", "application/json")
         .send({
           username: "esbietta",
-          email:"esbietta@gmail.com",
+          email:"esbiettad@gmail.com",
           password: "123456",
         });
 
@@ -23,8 +23,8 @@ describe("Registro de Usuário", () => {
           .post("/auth/register")
           .set("Content-Type", "application/json")
           .send({
-            username: "maria",
-            email: "maria@gmail.com",
+            username: "esbietta",
+            email: "esbiettad@gmail.com",
             password: "123456",
           });
 
